@@ -1,14 +1,17 @@
 import React from 'react';
 import { Card, Image, Button } from 'semantic-ui-react';
-import { Activity } from '../../../app/models/activity';
+import LoadingComponent from '../../../app/layout/LoadingComponent';
+import { useStore } from '../../../app/stores/store';
 
-interface IProps {
-    activity: Activity;
-    setEditMode: (editMode: boolean) => void;
-    setSelectedActivity: (activity: Activity | null) => void;
-}
 
-const ActivityDetails: React.FC<IProps> = ({activity, setEditMode, setSelectedActivity}) => {
+
+const ActivityDetails = () => {
+
+  const {activityStore} = useStore();
+
+  const { selectedActivity:activity, openForm, cancelSelectedActivity} = activityStore;
+
+  if (!activity) return <LoadingComponent />;
   return (
     <Card fluid>
       <Image src={`/assets/categoryImages/${activity.category}.jpg`} wrapped ui={false} />
@@ -23,8 +26,8 @@ const ActivityDetails: React.FC<IProps> = ({activity, setEditMode, setSelectedAc
       </Card.Content>
       <Card.Content extra>
         <Button.Group widths={2}>
-            <Button onClick={() => setEditMode(true)} basic color='blue' content='Edit' />
-            <Button onClick={() => setSelectedActivity(null)} basic color='grey' content='Cancel' />
+            <Button onClick={() => openForm(activity.id)} basic color='blue' content='Edit' />
+            <Button onClick={() => cancelSelectedActivity()} basic color='grey' content='Cancel' />
         </Button.Group>
       </Card.Content>
     </Card>
